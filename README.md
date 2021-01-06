@@ -3,6 +3,7 @@
 ## directory
 #### data
 - 감성분석을 위한 데이터 (data for sentiment analysis) 
+- preprocess : 전처리한 
 
 #### scraping
 - 크롤링을 통한 데이터 수집 코드 (python code for scraping)
