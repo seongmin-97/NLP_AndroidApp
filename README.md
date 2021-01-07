@@ -5,6 +5,10 @@
 - 감성분석을 위한 데이터 (data for sentiment analysis) 
 - preprocess : 전처리한 데이터 (preprocessed data)
 
+#### Embedding
+- 단어 임베딩 데이터와 코드 (word embedding data and its code)
+- embedding_data : 임베딩된 
+
 #### scraping
 - 크롤링을 통한 데이터 수집 코드 (python code for scraping)
 
