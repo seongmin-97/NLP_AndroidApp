@@ -1,2 +1,4 @@
 /Embedding/embedding_data/Doc2Vec_embedding.model
 /Embedding/embedding_data/Doc2Vec_embedding.model.docvecs.vectors_docs.npy
+/Embedding/embedding_data/Doc2Vec_embedding_min_count_15.model
+/Embedding/embedding_data/Doc2Vec_embedding_min_count_15.model.docvecs.vectors_docs.npy
