@@ -30,12 +30,23 @@ for page in range(1, 3) :
         genre = "드라마"
 
         try :
-            story = bs.find('div', {'class' : 'story_area'}).find('p', {'class' : 'con_tx'})
+            story = bs.find('p', {'class' : 'con_tx'}).get_text()
         except :
             story = None
 
+        try :
+            em_list = bs.find('div', {'class' : 'star_score'}).findAll('em')
+            score = []
+
+            for em in em_list :
+                score.append(em.get_text())
+
+            score = ''.join(score)
+        except :
+            score = None
+
         print(title)
         print("\n")
-        print(story)
+        print(score)
         print("\n")
         
