@@ -4,3 +4,5 @@
 /Embedding/embedding_data/Doc2Vec_embedding_min_count_15.model.docvecs.vectors_docs.npy
 /recommendation/data/FastText_embedding.model.trainables.vectors_ngrams_lockf.npy
 /recommendation/data/FastText_embedding.model.wv.vectors_ngrams.npy
+/Embedding/embedding_data/FastText_embedding.model.trainables.vectors_ngrams_lockf.npy
+/Embedding/embedding_data/FastText_embedding.model.wv.vectors_ngrams.npy
