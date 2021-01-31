@@ -1,6 +1,8 @@
 # NLP_AndroidApp
 
 ## directory
+#### androidMovieDiary
+- 안드로이드 앱 프로젝트
 #### data
 - 감성분석을 위한 데이터 (data for sentiment analysis) 
 - preprocess : 전처리한 데이터 (preprocessed data)
