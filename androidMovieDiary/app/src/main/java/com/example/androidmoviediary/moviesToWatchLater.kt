@@ -1,59 +1,44 @@
 package com.example.androidmoviediary
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_movies_to_watch_later.*
+import kotlinx.android.synthetic.main.fragment_movies_to_watch_later.view.*
+import kotlinx.android.synthetic.main.fragment_reviewed_movies.view.*
+import kotlinx.android.synthetic.main.fragment_reviewed_movies.view.recyclerView
+import kotlinx.android.synthetic.main.item_recycler_choose.*
+import kotlinx.android.synthetic.main.item_recycler_choose.view.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [moviesToWatchLater.newInstance] factory method to
- * create an instance of this fragment.
- */
 class moviesToWatchLater : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_movies_to_watch_later, container, false)
+        val view = inflater.inflate(R.layout.fragment_movies_to_watch_later, container, false)
+
+        var adapter = CustomAdapter_choose_uncheck()
+        val helper = SqliteHelper(activity, "movie", 1)
+        adapter.listData.addAll(helper.selectRecommendedMovie())
+        view.recyclerView.adapter = adapter
+        view.recyclerView.layoutManager = LinearLayoutManager(context)
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment moviesToWatchLater.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            moviesToWatchLater().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onResume() {
+        super.onResume()
+        var adapter = CustomAdapter_choose_uncheck()
+        val helper = SqliteHelper(activity, "movie", 1)
+        adapter.listData.addAll(helper.selectRecommendedMovie())
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        Log.d("Resume", "hi")
+
     }
 }
