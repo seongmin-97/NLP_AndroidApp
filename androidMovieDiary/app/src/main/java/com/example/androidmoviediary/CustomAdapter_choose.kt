@@ -1,20 +1,14 @@
 package com.example.androidmoviediary
 
-import android.app.PendingIntent.getActivity
-import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_recycler.view.*
 import kotlinx.android.synthetic.main.item_recycler.view.movieGenre
 import kotlinx.android.synthetic.main.item_recycler.view.moviePlot
 import kotlinx.android.synthetic.main.item_recycler.view.movieRating
 import kotlinx.android.synthetic.main.item_recycler.view.movieTitle
 import kotlinx.android.synthetic.main.item_recycler.view.movieYear
-import kotlinx.android.synthetic.main.item_recycler_choose.*
 import kotlinx.android.synthetic.main.item_recycler_choose.view.*
 
 class CustomAdapter_choose : RecyclerView.Adapter<CustomAdapter_choose.Holder_choose>() {

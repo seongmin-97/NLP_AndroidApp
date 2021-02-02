@@ -1,27 +1,29 @@
 package com.example.androidmoviediary
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_reviewed_movies.*
+import kotlinx.android.synthetic.main.fragment_calender.*
 import kotlinx.android.synthetic.main.fragment_reviewed_movies.view.*
 
 
 class reviewedMovies : Fragment() {
     // 가상 데이터 만드는 함수
-    fun loadData(): MutableList<Movie> {
-        val data:MutableList<Movie> = mutableListOf()
+    fun loadData(): MutableList<Review> {
+        val data:MutableList<Review> = mutableListOf()
 
         for (no in 1..10) {
             val title = "어벤져스 ${no+1} : 에이지 오브 울트론"
             val rating = "별점 ${no+1} 점"
             val genre = "액션 ${no+1}"
             val year = no+2000
-            val plot = "뉴욕에서 음악 선생님으로 일하던 ‘조’는\n" +
+            val review = "뉴욕에서 음악 선생님으로 일하던 ‘조’는\n" +
                     "꿈에 그리던 최고의 밴드와 재즈 클럽에서 연주하게 된 그 날,\n" +
                     "예기치 못한 사고로 영혼이 되어 ‘태어나기 전 세상’에 떨어진다.\n" +
                     "\n" +
@@ -31,10 +33,14 @@ class reviewedMovies : Fragment() {
                     "링컨, 간디, 테레사 수녀도 멘토되길 포기한 영혼 ‘22’\n" +
                     "꿈의 무대에 서려면 ‘22’의 지구 통행증이 필요한 ‘조’\n" +
                     "그는 다시 지구로 돌아가 꿈의 무대에 설 수 있을까?"
-            var movie = Movie(title, rating, genre, year, plot)
-            data.add(movie)
+            var review_ = Review(title, rating, genre, year, review)
+            data.add(review_)
         }
         return data
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -43,8 +49,7 @@ class reviewedMovies : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_reviewed_movies, container, false)
-
-        val data:MutableList<Movie> = loadData()
+        val data:MutableList<Review> = loadData()
         var adapter = CustomAdapter()
         Log.d("data", "${data}")
         adapter.listData = data
