@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_recycler.view.*
 
 class CustomAdapter : RecyclerView.Adapter<Holder>() {
-    var listData = mutableListOf<Movie>()
+    var listData = mutableListOf<Review>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_recycler, parent, false)
@@ -19,17 +19,17 @@ class CustomAdapter : RecyclerView.Adapter<Holder>() {
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val movie = listData.get(position)
-        holder.setMovie(movie)
+        val review = listData.get(position)
+        holder.setMovie(review)
     }
 }
 
 class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    fun setMovie(movie: Movie) {
-        itemView.movieTitle.text = "${movie.title}"
-        itemView.movieRating.text = "${movie.rating}"
-        itemView.movieGenre.text = "${movie.genre}"
-        itemView.movieYear.text = "${movie.year}"
-        itemView.moviePlot.text = "${movie.plot}"
+    fun setMovie(review: Review) {
+        itemView.movieTitle.text = "${review.title}"
+        itemView.movieRating.text = "${review.rating}"
+        itemView.movieGenre.text = "${review.genre}"
+        itemView.movieYear.text = "${review.year}"
+        itemView.moviePlot.text = "${review.review}"
     }
 }
