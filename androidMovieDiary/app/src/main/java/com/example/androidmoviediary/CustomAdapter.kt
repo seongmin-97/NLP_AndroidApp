@@ -3,6 +3,7 @@ package com.example.androidmoviediary
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_recycler.view.*
 
@@ -12,7 +13,7 @@ class CustomAdapter : RecyclerView.Adapter<CustomAdapter.Holder>() {
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val helper = SqliteHelper(itemView.getContext(), "review", 1)
 
-        // 버튼 누르면 리뷰했떤 영화에서 삭제
+        // 버튼 누르면 리뷰했던 영화에서 삭제
         init {
             itemView.uncheckButton.setOnClickListener {
                 val year = itemView.yearText.text.toString().toInt()
@@ -27,9 +28,13 @@ class CustomAdapter : RecyclerView.Adapter<CustomAdapter.Holder>() {
                 helper.deleteReviewedMovie(reviewData)
                 listData.remove(reviewData)
                 notifyDataSetChanged()
+
+                // 메세지 울력
+                val message = "리뷰가 삭제되었습니다."
+                Toast.makeText(itemView.getContext(), message, Toast.LENGTH_LONG).show()
             }
         }
-
+        // 아이템 뷰에 데이터 집어넣기
         fun setMovie(review: Review) {
             itemView.yearText.text = "${review.year}"
             itemView.monthText.text = "${review.month}"

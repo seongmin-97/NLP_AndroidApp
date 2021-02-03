@@ -3,6 +3,7 @@ package com.example.androidmoviediary
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_recycler.view.movieGenre
 import kotlinx.android.synthetic.main.item_recycler.view.movieReview
@@ -29,8 +30,14 @@ class CustomAdapter_choose_uncheck : RecyclerView.Adapter<CustomAdapter_choose_u
                 helper.deleteRecommendedMovie(movie)
                 listData.remove(movie)
                 notifyDataSetChanged()
+
+                // 메세지 울력
+                val message = "나중에 볼 영화에서 삭제되었습니다."
+                Toast.makeText(itemView.getContext(), message, Toast.LENGTH_LONG).show()
             }
         }
+
+        // 아이템 뷰에 데이터 집어넣기
         fun setMovie(movie: Movie) {
             itemView.movieTitle.text = "${movie.title}"
             itemView.movieRating.text = "${movie.rating}"

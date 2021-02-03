@@ -3,6 +3,7 @@ package com.example.androidmoviediary
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_recycler.view.movieGenre
 import kotlinx.android.synthetic.main.item_recycler.view.movieReview
@@ -16,6 +17,7 @@ class CustomAdapter_choose : RecyclerView.Adapter<CustomAdapter_choose.Holder_ch
 
     inner class Holder_choose(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        // 아이템 뷰에 데이터 집어넣기
         fun setMovie(movie: Movie) {
             itemView.movieTitle.text = "${movie.title}"
             itemView.movieRating.text = "${movie.rating}"
@@ -48,6 +50,10 @@ class CustomAdapter_choose : RecyclerView.Adapter<CustomAdapter_choose.Holder_ch
             val plot = holder.itemView.movieReview.text.toString()
             var movie = Movie(title, rating, genre, year, plot)
             helper.insertRecommendedMovie(movie)
+
+            // 메세지 울력
+            val message = "나중에 볼 영화에 추가되었습니다."
+            Toast.makeText(holder.itemView.getContext(), message, Toast.LENGTH_LONG).show()
         }
     }
 }

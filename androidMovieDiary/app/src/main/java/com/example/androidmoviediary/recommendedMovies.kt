@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_recommended_movies.*
 import kotlinx.android.synthetic.main.fragment_recommended_movies.view.*
@@ -48,11 +49,13 @@ class recommendedMovies : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_recommended_movies, container, false)
 
+        // 리사이클러뷰
         val data:MutableList<Movie> = loadData()
         var adapter = CustomAdapter_choose()
         adapter.listData = data
         view.recyclerView.adapter = adapter
         view.recyclerView.layoutManager = LinearLayoutManager(context)
+
         return view
     }
 }

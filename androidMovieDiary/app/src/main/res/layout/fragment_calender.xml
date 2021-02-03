@@ -4,31 +4,121 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".calender">
 
-        <CalendarView
-            android:id="@+id/calendarView"
+        <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="48dp"
-            app:layout_constraintBottom_toTopOf="@+id/fragment4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <fragment
-            android:id="@+id/fragment4"
-            android:name="com.example.androidmoviediary.inputReview"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/calendarView"
-            tools:layout="@layout/fragment_input_review" />
+            app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/ConstraintLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                                <Button
+                                    android:id="@+id/inputButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="24dp"
+                                    android:layout_marginEnd="32dp"
+                                    android:layout_marginRight="32dp"
+                                    android:background="@drawable/savebutton"
+                                    android:text="저장"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="18sp"
+                                    android:visibility="visible"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/inputReview" />
+
+                                <EditText
+                                    android:id="@+id/inputReview"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="28dp"
+                                    android:layout_marginLeft="28dp"
+                                    android:layout_marginTop="12dp"
+                                    android:layout_marginEnd="28dp"
+                                    android:layout_marginRight="28dp"
+                                    android:background="@drawable/edittextbackground"
+                                    android:clickable="true"
+                                    android:ems="10"
+                                    android:gravity="start"
+                                    android:hint="영화 리뷰를 입력해주세요"
+                                    android:imeOptions="actionDone"
+                                    android:inputType="textMultiLine"
+                                    android:minLines="3"
+                                    android:onClick="scroll"
+                                    android:padding="8dp"
+                                    android:textColorHint="#1E1E1E"
+                                    android:visibility="visible"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.0"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/inputTitle" />
+
+                                <CalendarView
+                                    android:id="@+id/calendarView"
+                                    android:layout_width="384dp"
+                                    android:layout_height="309dp"
+                                    android:background="#FFFFFF"
+                                    android:onClick="hideKeyboard"
+                                    android:theme="@style/CustomCalendarMonth"
+                                    android:dateTextAppearance="@style/CalenderViewDateCustomText"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <EditText
+                                    android:id="@+id/inputTitle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="36dp"
+                                    android:layout_marginStart="28dp"
+                                    android:layout_marginLeft="28dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="28dp"
+                                    android:layout_marginRight="28dp"
+                                    android:layout_marginBottom="16dp"
+                                    android:background="@drawable/edittextbackground"
+                                    android:ems="10"
+                                    android:gravity="start|center_vertical"
+                                    android:hint="영화 제목을 입력해주세요"
+                                    android:inputType="textPersonName"
+                                    android:padding="8dp"
+                                    android:textColorHint="#1E1E1E"
+                                    android:visibility="visible"
+                                    app:layout_constraintBottom_toTopOf="@+id/inputReview"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/date" />
+
+                                <TextView
+                                    android:id="@+id/date"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="28dp"
+                                    android:layout_marginLeft="28dp"
+                                    android:text="12월 31일"
+                                    android:textColor="#000000"
+                                    android:textSize="24sp"
+                                    android:visibility="visible"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/calendarView" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+        </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
