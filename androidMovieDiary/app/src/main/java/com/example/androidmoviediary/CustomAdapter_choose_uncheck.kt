@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_recycler.view.movieGenre
-import kotlinx.android.synthetic.main.item_recycler.view.moviePlot
+import kotlinx.android.synthetic.main.item_recycler.view.movieReview
 import kotlinx.android.synthetic.main.item_recycler.view.movieRating
 import kotlinx.android.synthetic.main.item_recycler.view.movieTitle
 import kotlinx.android.synthetic.main.item_recycler.view.movieYear
@@ -17,13 +17,14 @@ class CustomAdapter_choose_uncheck : RecyclerView.Adapter<CustomAdapter_choose_u
     inner class Holder_choose_uncheck(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var helper = SqliteHelper(itemView.getContext(), "movie", 1)
 
+        // 버튼 누르면 나중에 볼 영화에서 삭제
         init {
             itemView.checkButton.setOnClickListener {
                 val title = itemView.movieTitle.text.toString()
                 val rating =  "${itemView.movieRating.text.toString()}"
                 val genre = itemView.movieGenre.text.toString()
                 val year = itemView.movieYear.text.toString().toInt()
-                val plot = itemView.moviePlot.text.toString()
+                val plot = itemView.movieReview.text.toString()
                 var movie = Movie(title, rating, genre, year, plot)
                 helper.deleteRecommendedMovie(movie)
                 listData.remove(movie)
@@ -35,7 +36,7 @@ class CustomAdapter_choose_uncheck : RecyclerView.Adapter<CustomAdapter_choose_u
             itemView.movieRating.text = "${movie.rating}"
             itemView.movieGenre.text = "${movie.genre}"
             itemView.movieYear.text = "${movie.year}"
-            itemView.moviePlot.text = "${movie.plot}"
+            itemView.movieReview.text = "${movie.plot}"
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder_choose_uncheck {

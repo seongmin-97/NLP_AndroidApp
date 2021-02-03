@@ -28,17 +28,17 @@ class moviesToWatchLater : Fragment() {
         adapter.listData.addAll(helper.selectRecommendedMovie())
         view.recyclerView.adapter = adapter
         view.recyclerView.layoutManager = LinearLayoutManager(context)
+
         return view
     }
 
     override fun onResume() {
         super.onResume()
+
         var adapter = CustomAdapter_choose_uncheck()
         val helper = SqliteHelper(activity, "movie", 1)
         adapter.listData.addAll(helper.selectRecommendedMovie())
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
-        Log.d("Resume", "hi")
-
     }
 }

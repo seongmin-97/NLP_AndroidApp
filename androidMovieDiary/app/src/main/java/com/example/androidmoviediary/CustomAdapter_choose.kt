@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_recycler.view.movieGenre
-import kotlinx.android.synthetic.main.item_recycler.view.moviePlot
+import kotlinx.android.synthetic.main.item_recycler.view.movieReview
 import kotlinx.android.synthetic.main.item_recycler.view.movieRating
 import kotlinx.android.synthetic.main.item_recycler.view.movieTitle
 import kotlinx.android.synthetic.main.item_recycler.view.movieYear
@@ -21,7 +21,7 @@ class CustomAdapter_choose : RecyclerView.Adapter<CustomAdapter_choose.Holder_ch
             itemView.movieRating.text = "${movie.rating}"
             itemView.movieGenre.text = "${movie.genre}"
             itemView.movieYear.text = "${movie.year}"
-            itemView.moviePlot.text = "${movie.plot}"
+            itemView.movieReview.text = "${movie.plot}"
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder_choose {
@@ -38,13 +38,14 @@ class CustomAdapter_choose : RecyclerView.Adapter<CustomAdapter_choose.Holder_ch
         val movie = listData.get(position)
         holder.setMovie(movie)
 
+        // 체크 버튼 누르면 나중에 볼 영화 목록에 추가
         val helper = SqliteHelper(holder.itemView.getContext(), "movie", 1)
         holder.itemView.checkButton.setOnClickListener{
             val title = holder.itemView.movieTitle.text.toString()
             val rating =  "${holder.itemView.movieRating.text.toString()}"
             val genre = holder.itemView.movieGenre.text.toString()
             val year = holder.itemView.movieYear.text.toString().toInt()
-            val plot = holder.itemView.moviePlot.text.toString()
+            val plot = holder.itemView.movieReview.text.toString()
             var movie = Movie(title, rating, genre, year, plot)
             helper.insertRecommendedMovie(movie)
         }
