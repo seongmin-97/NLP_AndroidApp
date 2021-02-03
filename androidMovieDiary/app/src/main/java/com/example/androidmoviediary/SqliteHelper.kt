@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import android.widget.Toast
 
 class SqliteHelper(context: Context?, name: String, version: Int) : SQLiteOpenHelper(context, name, null, version) {
 
@@ -28,7 +29,7 @@ class SqliteHelper(context: Context?, name: String, version: Int) : SQLiteOpenHe
         wd.close()
     }
 
-    fun insertReviewedMovie(review: Review) {
+    fun insertReviewedMovie(review: Review): Boolean {
         val values = ContentValues()
         values.put("year", review.year)
         values.put("month", review.month)
@@ -40,8 +41,18 @@ class SqliteHelper(context: Context?, name: String, version: Int) : SQLiteOpenHe
         values.put("movieYear", review.movieYear)
 
         val wd = writableDatabase
-        wd.insert("ReviewedMovie", null, values)
-        wd.close()
+
+        if (review.title.isEmpty()) {
+            wd.close()
+            return false
+        } else if (review.review.isEmpty()) {
+            wd.close()
+            return false
+        } else {
+            wd.insert("ReviewedMovie", null, values)
+            wd.close()
+            return true
+        }
     }
 
     fun deleteRecommendedMovie(movie: Movie) {

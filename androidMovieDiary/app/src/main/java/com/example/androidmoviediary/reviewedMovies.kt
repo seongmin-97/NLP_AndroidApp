@@ -22,22 +22,34 @@ class reviewedMovies : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_reviewed_movies, container, false)
 
+        // 어댑터 연결
         var adapter = CustomAdapter()
         val helper = SqliteHelper(activity, "review", 1)
         adapter.listData.addAll(helper.selectReviewedMovie())
         view.recyclerView.adapter = adapter
-        view.recyclerView.layoutManager = LinearLayoutManager(context)
 
+        // 역순으로 정렬
+        val manager = LinearLayoutManager(context)
+        manager.reverseLayout = true
+        manager.stackFromEnd = true
+        view.recyclerView.layoutManager = manager
         return view
     }
 
+    // 실시간으로 업데이터되게
     override fun onResume() {
         super.onResume()
 
+        // 어댑터 연결
         var adapter = CustomAdapter()
         val helper = SqliteHelper(activity, "review", 1)
         adapter.listData.addAll(helper.selectReviewedMovie())
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(context)
+
+        // 역순으로 정렬
+        val manager = LinearLayoutManager(context)
+        manager.reverseLayout = true
+        manager.stackFromEnd = true
+        recyclerView.layoutManager = manager
     }
 }
