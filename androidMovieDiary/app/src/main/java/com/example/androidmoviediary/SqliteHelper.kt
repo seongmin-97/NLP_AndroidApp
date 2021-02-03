@@ -9,8 +9,10 @@ import android.util.Log
 class SqliteHelper(context: Context?, name: String, version: Int) : SQLiteOpenHelper(context, name, null, version) {
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val create = "create table recommendedMovie(num integer primary key, title text, rating text, genre text, year integer, plot text, unique(title))"
-        db?.execSQL(create)
+        val createRecommendedMovie = "create table recommendedMovie(num integer primary key, title text, rating text, genre text, year integer, plot text, unique(title))"
+        val createReviewedMovie ="create table reviewedMovie(num integer primary key, year integer, month integer, day integer, title text, review text, rating text, genre text, movieYear integer, unique(review))"
+        db?.execSQL(createRecommendedMovie)
+        db?.execSQL(createReviewedMovie)
     }
 
     fun insertRecommendedMovie(movie: Movie) {
@@ -26,8 +28,31 @@ class SqliteHelper(context: Context?, name: String, version: Int) : SQLiteOpenHe
         wd.close()
     }
 
-    fun deleteRecommendedMovie(movie : Movie) {
+    fun insertReviewedMovie(review: Review) {
+        val values = ContentValues()
+        values.put("year", review.year)
+        values.put("month", review.month)
+        values.put("day", review.day)
+        values.put("title", review.title)
+        values.put("review", review.review)
+        values.put("rating", review.rating)
+        values.put("genre", review.genre)
+        values.put("movieYear", review.movieYear)
+
+        val wd = writableDatabase
+        wd.insert("ReviewedMovie", null, values)
+        wd.close()
+    }
+
+    fun deleteRecommendedMovie(movie: Movie) {
         val delete = "delete from recommendedMovie where title = '${movie.title}'"
+        val db = writableDatabase
+        db.execSQL(delete)
+        db.close()
+    }
+
+    fun deleteReviewedMovie(review: Review) {
+        val delete = "delete from reviewedMovie where review = '${review.review}'"
         val db = writableDatabase
         db.execSQL(delete)
         db.close()
@@ -47,6 +72,31 @@ class SqliteHelper(context: Context?, name: String, version: Int) : SQLiteOpenHe
             val plot = cursor.getString(cursor.getColumnIndex("plot"))
 
             list.add(Movie(title, rating, genre, year, plot))
+        }
+
+        cursor.close()
+        rd.close()
+
+        return list
+    }
+
+    fun selectReviewedMovie() : MutableList<Review> {
+        val list = mutableListOf<Review>()
+        val select = "select * from reviewedMovie"
+        val rd = readableDatabase
+        val cursor = rd.rawQuery(select, null)
+
+        while (cursor.moveToNext()) {
+            val year = cursor.getInt(cursor.getColumnIndex("year"))
+            val month = cursor.getInt(cursor.getColumnIndex("month"))
+            val day = cursor.getInt(cursor.getColumnIndex("day"))
+            val title = cursor.getString(cursor.getColumnIndex("title"))
+            val review = cursor.getString(cursor.getColumnIndex("review"))
+            val rating = cursor.getString(cursor.getColumnIndex("rating"))
+            val genre = cursor.getString(cursor.getColumnIndex("genre"))
+            val movieYear = cursor.getInt(cursor.getColumnIndex("movieYear"))
+
+            list.add(Review(year, month, day, title, review, rating, genre, movieYear))
         }
 
         cursor.close()

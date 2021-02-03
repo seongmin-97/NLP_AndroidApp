@@ -1,3 +1,5 @@
 package com.example.androidmoviediary
 
-data class Review (var title: String, var rating: String, var genre: String, var year: Int, var review: String)
+import java.time.Month
+
+data class Review (var year: Int, var month: Int, var day: Int, var title: String, var review: String, var rating: String, var genre: String, var movieYear: Int)

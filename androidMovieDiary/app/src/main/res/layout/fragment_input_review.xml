@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
+    android:visibility="visible"
     tools:context=".inputReview">
 
     <TextView
@@ -18,6 +19,7 @@
         android:text="12월 31일"
         android:textColor="#000000"
         android:textSize="24sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/inputTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,6 +40,7 @@
         android:inputType="textPersonName"
         android:padding="8dp"
         android:textColorHint="#1E1E1E"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date" />
@@ -61,6 +64,7 @@
         android:padding="8dp"
         android:textColor="#000000"
         android:textColorHint="#1E1E1E"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputTitle" />
@@ -76,6 +80,7 @@
         android:text="저장"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputReview" />
 
