@@ -59,7 +59,6 @@
                                     android:imeOptions="actionDone"
                                     android:inputType="textMultiLine"
                                     android:minLines="3"
-                                    android:onClick="scroll"
                                     android:padding="8dp"
                                     android:textColorHint="#1E1E1E"
                                     android:visibility="visible"
@@ -70,12 +69,14 @@
 
                                 <CalendarView
                                     android:id="@+id/calendarView"
+                                    style="@android:style/Widget.DeviceDefault.Light.CalendarView"
                                     android:layout_width="384dp"
                                     android:layout_height="309dp"
                                     android:background="#FFFFFF"
+                                    android:dateTextAppearance="@style/CalenderViewDateCustomText"
                                     android:onClick="hideKeyboard"
                                     android:theme="@style/CustomCalendarMonth"
-                                    android:dateTextAppearance="@style/CalenderViewDateCustomText"
+                                    android:weekDayTextAppearance="@style/CalenderViewWeekCustomText"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent" />
