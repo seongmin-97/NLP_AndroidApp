@@ -9,7 +9,7 @@ class FragmentAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter
     var fragmentList = listOf<Fragment>()
 
     override fun getItemCount(): Int {
-        return 5
+        return fragmentList.size
     }
 
     override fun createFragment(position: Int): Fragment {

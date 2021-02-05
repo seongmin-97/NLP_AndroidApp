@@ -1,6 +1,7 @@
 package com.example.androidmoviediary
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -27,12 +28,10 @@ class MainActivity : AppCompatActivity() {
         viewPager.adapter = adapter
 
         // 탭 레이아웃과 연결 icon 출처: flacicon
+        val icon = mutableListOf(R.drawable.calendaricon, R.drawable.reviewicon, R.drawable.recommendicon, R.drawable.listicon, R.drawable.settingsicon)
+
         TabLayoutMediator(tabLayout, viewPager) {tab, position ->
-            tabLayout.getTabAt(0)?.setIcon(R.drawable.calendaricon)
-            tabLayout.getTabAt(1)?.setIcon(R.drawable.reviewicon)
-            tabLayout.getTabAt(2)?.setIcon(R.drawable.recommendicon)
-            tabLayout.getTabAt(3)?.setIcon(R.drawable.listicon)
-            tabLayout.getTabAt(4)?.setIcon(R.drawable.settingsicon)
+            tab.setIcon(icon[position])
         }.attach()
 
         // 뷰페이저 전환되면 페이지 내리기

@@ -10,11 +10,16 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.graphics.toColor
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_calender.*
 import kotlinx.android.synthetic.main.fragment_calender.view.*
+import java.net.HttpURLConnection
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.net.ssl.HttpsURLConnection
+import kotlin.concurrent.thread
 
 
 class calender : Fragment() {
@@ -25,11 +30,6 @@ class calender : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_calender, container, false)
 
-        // 현재 날짜 표시하기
-        val sdf = SimpleDateFormat("yyyy년 M월 d일")
-        val currentDate = sdf.format(Date())
-        view.date.text = "${currentDate}"
-
         // 클릭한 날짜를 저장하기 위한 클래스
         class reviewDate() {
             var year: Int = 0
@@ -39,6 +39,24 @@ class calender : Fragment() {
 
         var calenderDate = reviewDate()
 
+        // 현재 날짜 표시하기
+        val sdf = SimpleDateFormat("yyyy년 M월 d일")
+        val currentDate = sdf.format(Date())
+        view.date.text = "${currentDate}"
+
+        // 앱을 첫 실행했을 때 날짜 클릭 안하고 바로 저장할 때 오늘 날짜로 저장 안되는 문제 해결
+        var calendar:Calendar = Calendar.getInstance()
+        calendar.time
+        var year = calendar.get(Calendar.YEAR)
+        var month = calendar.get(Calendar.MONDAY) + 1
+        var day = calendar.get(Calendar.DATE)
+
+        calenderDate.year = year
+        calenderDate.month = month
+        calenderDate.day = day
+
+
+
         // 날짜 클릭하면 입력창이 보이게하고, 텍스트 필드에 날짜 보여주기
         view.calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
             date.text = "${year}년 ${month+1}월 ${dayOfMonth}일"
@@ -47,6 +65,7 @@ class calender : Fragment() {
             calenderDate.month = month+1
             calenderDate.day = dayOfMonth
         }
+
 
         // 저장 버튼 누르면 영화 리뷰 저장!
         val helper = SqliteHelper(activity, "review", 1)
@@ -64,14 +83,7 @@ class calender : Fragment() {
             if (helper.insertReviewedMovie(reviewData)) {
                 // 메시지 출력
                 val message = "리뷰가 저장되었습니다."
-                val toast = Toast.makeText(context, message, Toast.LENGTH_LONG)
-                val view = toast.view
-                view.setBackgroundColor(resources.getColor(R.color.black))
-
-                val group = toast.view as ViewGroup
-                val msgTextView = group.getChildAt(0) as TextView
-                msgTextView.setTextColor(resources.getColor(R.color.white))
-                toast.show()
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
             } else {
                 val message = "제목과 리뷰를 입력해주세요."
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show()
@@ -80,6 +92,8 @@ class calender : Fragment() {
             // 제목, 리뷰 입력 칸 빈칸으로
             view.inputTitle.setText("")
             view.inputReview.setText("")
+
+            
         }
 
         //  외부 터치시 키보드 내리기
@@ -87,11 +101,10 @@ class calender : Fragment() {
             it.hideKeyboard()
         }
 
-        // 키보드 올라오면 전체적인 레이아웃 올리기
-
-        view.date.setOnClickListener {
-            Log.d("scroll", "it is done")
+        view.calendarView.setOnClickListener {
+            it.hideKeyboard()
         }
+
         return view
     }
 
