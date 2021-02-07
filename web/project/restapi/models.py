@@ -14,3 +14,6 @@ class Movie(models.Model) :
     supp_act = models.CharField('supp_act', max_length=20)
     page_url = models.URLField('page_url')
     img_url = models.URLField('img_url')
+
+class movieTitle(models.Model) :
+    title = models.CharField('title', max_length=20)

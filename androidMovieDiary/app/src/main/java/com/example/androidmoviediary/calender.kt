@@ -30,6 +30,7 @@ class calender : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_calender, container, false)
 
+
         // 클릭한 날짜를 저장하기 위한 클래스
         class reviewDate() {
             var year: Int = 0
@@ -92,8 +93,6 @@ class calender : Fragment() {
             // 제목, 리뷰 입력 칸 빈칸으로
             view.inputTitle.setText("")
             view.inputReview.setText("")
-
-            
         }
 
         //  외부 터치시 키보드 내리기
@@ -105,6 +104,14 @@ class calender : Fragment() {
             it.hideKeyboard()
         }
 
+        // 키보드 올라올 때 스크롤 끝까지
+        view.inputTitle.setOnClickListener {
+            view.scrollView.fullScroll(ScrollView.FOCUS_DOWN)
+        }
+
+        view.inputReview.setOnClickListener {
+            view.scrollView.fullScroll(ScrollView.FOCUS_DOWN)
+        }
         return view
     }
 
@@ -114,11 +121,8 @@ class calender : Fragment() {
         inputManager.hideSoftInputFromWindow(inputTitle.windowToken, 0)
     }
 
-    // 스크롤 끝까지 올리는 함수
-    fun View.scroll() {
-        scrollView.post {
-            scrollView.fullScroll(View.FOCUS_DOWN)
-        }
-        Log.d("scroll", "it is done")
+    // 영화 제목 불러온거 가져오기
+    fun setValue(title: List<movieTitleItem>) {
+        Log.d("calendarTitle", "success")
     }
 }
