@@ -1,6 +1,8 @@
 package com.example.androidmoviediary
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -14,6 +16,11 @@ import androidx.core.graphics.toColor
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_calender.*
 import kotlinx.android.synthetic.main.fragment_calender.view.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -29,7 +36,6 @@ class calender : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_calender, container, false)
-
 
         // 클릭한 날짜를 저장하기 위한 클래스
         class reviewDate() {
@@ -56,8 +62,6 @@ class calender : Fragment() {
         calenderDate.month = month
         calenderDate.day = day
 
-
-
         // 날짜 클릭하면 입력창이 보이게하고, 텍스트 필드에 날짜 보여주기
         view.calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
             date.text = "${year}년 ${month+1}월 ${dayOfMonth}일"
@@ -67,6 +71,15 @@ class calender : Fragment() {
             calenderDate.day = dayOfMonth
         }
 
+        // 검색 버튼 누르면 팝업창 띄우기
+
+        view.searchTitle.setOnClickListener {
+            val intent = Intent(activity, popUpActivity::class.java)
+            val inputText = inputTitle.text.toString()
+            intent.putExtra("title", inputText)
+            Log.d("putExtra", "${inputText}")
+            startActivityForResult(intent, 99)
+        }
 
         // 저장 버튼 누르면 영화 리뷰 저장!
         val helper = SqliteHelper(activity, "review", 1)
@@ -115,14 +128,19 @@ class calender : Fragment() {
         return view
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+            val getTitle = data?.getStringExtra("returnTitle")
+            Log.d("return", "${getTitle}")
+            inputTitle.setText(getTitle)
+        }
+    }
+
     // 키보드 내리는 함수
     fun View.hideKeyboard() {
         val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(inputTitle.windowToken, 0)
-    }
-
-    // 영화 제목 불러온거 가져오기
-    fun setValue(title: List<movieTitleItem>) {
-        Log.d("calendarTitle", "success")
     }
 }
