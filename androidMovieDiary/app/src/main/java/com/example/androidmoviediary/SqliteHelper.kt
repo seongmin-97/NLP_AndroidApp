@@ -12,7 +12,7 @@ class SqliteHelper(context: Context?, name: String, version: Int) : SQLiteOpenHe
 
     override fun onCreate(db: SQLiteDatabase?) {
         val createRecommendedMovie = "create table recommendedMovie(num integer primary key, title text, rating text, genre text, year integer, plot text, unique(title))"
-        val createReviewedMovie ="create table reviewedMovie(num integer primary key, year integer, month integer, day integer, title text, review text, rating text, genre text, movieYear integer, unique(review))"
+        val createReviewedMovie ="create table reviewedMovie(num integer primary key, year integer, month integer, day integer, title text, review text, rating text, genre text, movieYear integer, img_url text, unique(review))"
 
         db?.execSQL(createRecommendedMovie)
         db?.execSQL(createReviewedMovie)
@@ -41,6 +41,7 @@ class SqliteHelper(context: Context?, name: String, version: Int) : SQLiteOpenHe
         values.put("rating", review.rating)
         values.put("genre", review.genre)
         values.put("movieYear", review.movieYear)
+        values.put("img_url", review.img_url)
 
         val wd = writableDatabase
 
@@ -109,9 +110,10 @@ class SqliteHelper(context: Context?, name: String, version: Int) : SQLiteOpenHe
             val review = cursor.getString(cursor.getColumnIndex("review"))
             val rating = cursor.getString(cursor.getColumnIndex("rating"))
             val genre = cursor.getString(cursor.getColumnIndex("genre"))
-            val movieYear = cursor.getInt(cursor.getColumnIndex("movieYear"))
+            val movieYear = cursor.getString(cursor.getColumnIndex("movieYear"))
+            val img_url = cursor.getString(cursor.getColumnIndex("img_url"))
 
-            list.add(Review(year, month, day, title, review, rating, genre, movieYear))
+            list.add(Review(year, month, day, title, review, rating, genre, movieYear, img_url))
         }
 
         cursor.close()

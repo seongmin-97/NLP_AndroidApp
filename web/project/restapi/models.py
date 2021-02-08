@@ -31,3 +31,6 @@ class movieInfo(models.Model) :
     supp_act = models.CharField('supp_act', max_length=20)
     page_url = models.URLField('page_url')
     img_url = models.URLField('img_url')
+
+class sentiment(models.Model) :
+    rating = models.TextField('rating', max_length=2)
