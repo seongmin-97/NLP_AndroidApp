@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.graphics.toColor
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.activity_pop_up.*
 import kotlinx.android.synthetic.main.fragment_calender.*
 import kotlinx.android.synthetic.main.fragment_calender.view.*
 import retrofit2.Call
@@ -21,6 +22,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Path
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -76,36 +79,95 @@ class calender : Fragment() {
         view.searchTitle.setOnClickListener {
             val intent = Intent(activity, popUpActivity::class.java)
             val inputText = inputTitle.text.toString()
-            intent.putExtra("title", inputText)
-            Log.d("putExtra", "${inputText}")
-            startActivityForResult(intent, 99)
+            if (inputText.isEmpty()) {
+                val message = "제목을 입력해주세요."
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            } else {
+                intent.putExtra("title", inputText)
+                Log.d("putExtra", "${inputText}")
+                startActivityForResult(intent, 99)
+            }
         }
 
         // 저장 버튼 누르면 영화 리뷰 저장!
         val helper = SqliteHelper(activity, "review", 1)
         view.inputButton.setOnClickListener {
-            val year = calenderDate.year
-            val month = calenderDate.month
-            val day = calenderDate.day
-            val title = view.inputTitle.text.toString()
-            val review = view.inputReview.text.toString()
-            val rating = "좋음"
-            val genre = "장르|영화장르"
-            val movieYear = 2020
-            var reviewData = Review(year, month, day, title, review, rating, genre, movieYear)
+            // 웸의 데이터에서 해당 영화가 있으면 가져오고 없으면 입력한대로 출력
+            thread(start=true) {
+                val retrofit = Retrofit.Builder()
+                        .baseUrl("http://nlpandroidapp.pythonanywhere.com/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+                val INPUTTITLE = view.inputTitle.text.toString()
+                Log.d("inputtitle", "${INPUTTITLE}")
+                val useInterface = retrofit.create(getMovies::class.java)
 
-            if (helper.insertReviewedMovie(reviewData)) {
-                // 메시지 출력
-                val message = "리뷰가 저장되었습니다."
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-            } else {
-                val message = "제목과 리뷰를 입력해주세요."
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                useInterface.titles(INPUTTITLE).enqueue(object : Callback<List<movieInfoItem>> {
+                    // 네트워크가 통신이 안되면
+                    override fun onFailure(call: Call<List<movieInfoItem>>, t: Throwable) {
+                        val message = "네트워크가 원할하지 않습니다."
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    }
+
+                    override fun onResponse(
+                            call: Call<List<movieInfoItem>>,
+                            response: Response<List<movieInfoItem>>
+                    ) {
+                        var titleList = response.body() as List<movieInfoItem>
+                        Log.d("getTitle", "${titleList.size}")
+
+                        if (titleList.size == 0) {
+                            val year = calenderDate.year
+                            val month = calenderDate.month
+                            val day = calenderDate.day
+                            val title = view.inputTitle.text.toString()
+                            val review = view.inputReview.text.toString()
+                            val rating = "좋음"
+                            val genre = ""
+                            val movieYear = ""
+                            val img_url = "https://ssl.pstatic.net/static/movie/2011/06/poster_default.gif"
+                            var reviewData = Review(year, month, day, title, review, rating, genre, movieYear, img_url)
+
+                            if (helper.insertReviewedMovie(reviewData)) {
+                                // 메시지 출력
+                                val message = "리뷰가 저장되었습니다."
+                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+
+                                // 제목, 리뷰 입력 칸 빈칸으로
+                                view.inputTitle.setText("")
+                                view.inputReview.setText("")
+                            } else {
+                                val message = "제목과 리뷰를 입력해주세요."
+                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                            }
+                        } else {
+                            val year = calenderDate.year
+                            val month = calenderDate.month
+                            val day = calenderDate.day
+                            val title = titleList.get(0).title
+                            val review = view.inputReview.text.toString()
+                            val rating = "좋음"
+                            val genre = titleList.get(0).genre
+                            val movieYear = titleList.get(0).year.toString()
+                            val img_url = titleList.get(0).img_url
+                            var reviewData = Review(year, month, day, title, review, rating, genre, movieYear, img_url)
+
+                            if (helper.insertReviewedMovie(reviewData)) {
+                                // 메시지 출력
+                                val message = "리뷰가 저장되었습니다."
+                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+
+                                // 제목, 리뷰 입력 칸 빈칸으로
+                                view.inputTitle.setText("")
+                                view.inputReview.setText("")
+                            } else {
+                                val message = "제목과 리뷰를 입력해주세요."
+                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                })
             }
-
-            // 제목, 리뷰 입력 칸 빈칸으로
-            view.inputTitle.setText("")
-            view.inputReview.setText("")
         }
 
         //  외부 터치시 키보드 내리기
@@ -128,13 +190,19 @@ class calender : Fragment() {
         return view
     }
 
+    // 팝업 창에서 입력한 결과 리턴
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
             val getTitle = data?.getStringExtra("returnTitle")
             Log.d("return", "${getTitle}")
-            inputTitle.setText(getTitle)
+            if (getTitle == "clickedButton") {
+                inputTitle.setSelection(inputTitle.text.length)
+            } else {
+                inputTitle.setText(getTitle)
+                inputTitle.setSelection(inputTitle.text.length)
+            }
         }
     }
 
@@ -142,5 +210,11 @@ class calender : Fragment() {
     fun View.hideKeyboard() {
         val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(inputTitle.windowToken, 0)
+    }
+
+    // 네트워크 연결을 위한 인터페이스
+    interface getMovies {
+        @GET("api/movieInfo/{title}")
+        fun titles(@Path("title") title: String): Call<List<movieInfoItem>>
     }
 }

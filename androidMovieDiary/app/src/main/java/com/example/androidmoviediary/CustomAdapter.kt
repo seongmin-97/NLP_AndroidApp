@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_recycler.view.*
 
 class CustomAdapter : RecyclerView.Adapter<CustomAdapter.Holder>() {
@@ -23,8 +24,9 @@ class CustomAdapter : RecyclerView.Adapter<CustomAdapter.Holder>() {
                 val review = itemView.movieReview.text.toString()
                 val rating = itemView.movieRating.text.toString()
                 val genre = itemView.movieGenre.text.toString()
-                val movieYear = itemView.movieYear.text.toString().toInt()
-                var reviewData = Review(year, month, day, title, review, rating, genre, movieYear)
+                val movieYear = itemView.movieYear.text.toString()
+                val img_url = itemView.img_url.text.toString()
+                var reviewData = Review(year, month, day, title, review, rating, genre, movieYear, img_url)
                 helper.deleteReviewedMovie(reviewData)
                 listData.remove(reviewData)
                 notifyDataSetChanged()
@@ -44,6 +46,8 @@ class CustomAdapter : RecyclerView.Adapter<CustomAdapter.Holder>() {
             itemView.movieGenre.text = "${review.genre}"
             itemView.movieYear.text = "${review.movieYear}"
             itemView.movieReview.text = "${review.review}"
+            itemView.img_url.text = "${review.img_url}"
+            Glide.with(itemView).load(review.img_url).into(itemView.imageView)
         }
     }
 
