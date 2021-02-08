@@ -28,6 +28,24 @@
                             android:layout_height="match_parent">
 
                                 <Button
+                                    android:id="@+id/searchTitle"
+                                    android:layout_width="67dp"
+                                    android:layout_height="37dp"
+                                    android:layout_marginStart="12dp"
+                                    android:layout_marginLeft="12dp"
+                                    android:layout_marginEnd="28dp"
+                                    android:layout_marginRight="28dp"
+                                    android:layout_marginBottom="12dp"
+                                    android:background="@drawable/searchbutton"
+                                    android:text="검색"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="18sp"
+                                    android:visibility="visible"
+                                    app:layout_constraintBottom_toTopOf="@+id/inputReview"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toEndOf="@+id/inputTitle" />
+
+                                <Button
                                     android:id="@+id/inputButton"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -88,8 +106,6 @@
                                     android:layout_marginStart="28dp"
                                     android:layout_marginLeft="28dp"
                                     android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="28dp"
-                                    android:layout_marginRight="28dp"
                                     android:layout_marginBottom="16dp"
                                     android:background="@drawable/edittextbackground"
                                     android:ems="10"
@@ -100,7 +116,7 @@
                                     android:textColorHint="#1E1E1E"
                                     android:visibility="visible"
                                     app:layout_constraintBottom_toTopOf="@+id/inputReview"
-                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintEnd_toStartOf="@+id/searchTitle"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/date" />
 
@@ -116,6 +132,7 @@
                                     android:visibility="visible"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/calendarView" />
+
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>

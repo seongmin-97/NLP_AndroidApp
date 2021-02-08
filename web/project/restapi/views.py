@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Movie, movieTitle
-from .serializers import MovieSerializer, movieTitleSerializer
+from .models import Movie, movieTitle, movieInfo
+from .serializers import MovieSerializer, movieTitleSerializer, movieInfoSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
@@ -9,8 +9,9 @@ from rest_framework.decorators import api_view
 
 @api_view(['GET'])
 def movie(request, title) :
-    getMovie = Movie.objects.filter(title=title)
-    result = MovieSerializer(getMovie, many=True)
+    search = title.replace(' ', '')
+    getMovie = movieInfo.objects.filter(titleNoSpace__contains=search)
+    result = movieInfoSerializer(getMovie, many=True)
     return Response(result.data)
 
 @api_view(['GET'])

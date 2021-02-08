@@ -6,12 +6,14 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.contentValuesOf
 
 class SqliteHelper(context: Context?, name: String, version: Int) : SQLiteOpenHelper(context, name, null, version) {
 
     override fun onCreate(db: SQLiteDatabase?) {
         val createRecommendedMovie = "create table recommendedMovie(num integer primary key, title text, rating text, genre text, year integer, plot text, unique(title))"
         val createReviewedMovie ="create table reviewedMovie(num integer primary key, year integer, month integer, day integer, title text, review text, rating text, genre text, movieYear integer, unique(review))"
+
         db?.execSQL(createRecommendedMovie)
         db?.execSQL(createReviewedMovie)
     }
@@ -55,6 +57,7 @@ class SqliteHelper(context: Context?, name: String, version: Int) : SQLiteOpenHe
         }
     }
 
+
     fun deleteRecommendedMovie(movie: Movie) {
         val delete = "delete from recommendedMovie where title = '${movie.title}'"
         val db = writableDatabase
@@ -68,6 +71,7 @@ class SqliteHelper(context: Context?, name: String, version: Int) : SQLiteOpenHe
         db.execSQL(delete)
         db.close()
     }
+
 
     fun selectRecommendedMovie() : MutableList<Movie> {
         val list = mutableListOf<Movie>()
@@ -115,6 +119,7 @@ class SqliteHelper(context: Context?, name: String, version: Int) : SQLiteOpenHe
 
         return list
     }
+
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
 
