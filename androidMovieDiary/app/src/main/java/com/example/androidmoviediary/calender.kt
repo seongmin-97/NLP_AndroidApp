@@ -3,6 +3,7 @@ package com.example.androidmoviediary
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.icu.text.CaseMap
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -24,6 +25,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -93,81 +95,103 @@ class calender : Fragment() {
         val helper = SqliteHelper(activity, "review", 1)
         view.inputButton.setOnClickListener {
             // 웸의 데이터에서 해당 영화가 있으면 가져오고 없으면 입력한대로 출력
-            thread(start=true) {
-                val retrofit = Retrofit.Builder()
-                        .baseUrl("http://nlpandroidapp.pythonanywhere.com/")
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build()
-                val INPUTTITLE = view.inputTitle.text.toString()
-                Log.d("inputtitle", "${INPUTTITLE}")
-                val useInterface = retrofit.create(getMovies::class.java)
+                val message = "리뷰를 저장하는 중입니다."
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                thread(start=true) {
+                    val retrofit = Retrofit.Builder()
+                            .baseUrl("http://nlpandroidapp.pythonanywhere.com/")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build()
+                    val INPUTTITLE = view.inputTitle.text.toString()
+                    Log.d("inputtitle", "${INPUTTITLE}")
+                    val useInterface = retrofit.create(getMovies::class.java)
 
-                useInterface.titles(INPUTTITLE).enqueue(object : Callback<List<movieInfoItem>> {
-                    // 네트워크가 통신이 안되면
-                    override fun onFailure(call: Call<List<movieInfoItem>>, t: Throwable) {
-                        val message = "네트워크가 원할하지 않습니다."
-                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                    }
+                    useInterface.titles(INPUTTITLE).enqueue(object : Callback<List<movieInfoItem>> {
+                        // 네트워크가 통신이 안되면
+                        override fun onFailure(call: Call<List<movieInfoItem>>, t: Throwable) {
+                            val message = "네트워크가 원할하지 않습니다."
+                            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                        }
 
-                    override fun onResponse(
-                            call: Call<List<movieInfoItem>>,
-                            response: Response<List<movieInfoItem>>
-                    ) {
-                        var titleList = response.body() as List<movieInfoItem>
-                        Log.d("getTitle", "${titleList.size}")
+                        override fun onResponse(
+                                call: Call<List<movieInfoItem>>,
+                                response: Response<List<movieInfoItem>>
+                        ) {
+                            var titleList = response.body() as List<movieInfoItem>
+                            Log.d("getTitle", "${titleList.size}")
 
-                        if (titleList.size == 0) {
-                            val year = calenderDate.year
-                            val month = calenderDate.month
-                            val day = calenderDate.day
-                            val title = view.inputTitle.text.toString()
-                            val review = view.inputReview.text.toString()
-                            val rating = "좋음"
-                            val genre = ""
-                            val movieYear = ""
-                            val img_url = "https://ssl.pstatic.net/static/movie/2011/06/poster_default.gif"
-                            var reviewData = Review(year, month, day, title, review, rating, genre, movieYear, img_url)
+                            thread(start=true) {
+                                val retrofit = Retrofit.Builder()
+                                        .baseUrl("http://nlpandroidapp.pythonanywhere.com/")
+                                        .addConverterFactory(GsonConverterFactory.create())
+                                        .build()
+                                val INPUTQUERY = view.inputReview.text.toString()
+                                Log.d("inputtitle", "${INPUTTITLE}")
+                                val useInterface = retrofit.create(getRating::class.java)
 
-                            if (helper.insertReviewedMovie(reviewData)) {
-                                // 메시지 출력
-                                val message = "리뷰가 저장되었습니다."
-                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                                useInterface.ratings(INPUTQUERY).enqueue(object : Callback<List<getRatingItem>> {
+                                    override fun onFailure(call: Call<List<getRatingItem>>, t: Throwable) {
+                                        val message = "네트워크가 원할하지 않습니다."
+                                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                                    }
 
-                                // 제목, 리뷰 입력 칸 빈칸으로
-                                view.inputTitle.setText("")
-                                view.inputReview.setText("")
-                            } else {
-                                val message = "제목과 리뷰를 입력해주세요."
-                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                            }
-                        } else {
-                            val year = calenderDate.year
-                            val month = calenderDate.month
-                            val day = calenderDate.day
-                            val title = titleList.get(0).title
-                            val review = view.inputReview.text.toString()
-                            val rating = "좋음"
-                            val genre = titleList.get(0).genre
-                            val movieYear = titleList.get(0).year.toString()
-                            val img_url = titleList.get(0).img_url
-                            var reviewData = Review(year, month, day, title, review, rating, genre, movieYear, img_url)
+                                    override fun onResponse(call: Call<List<getRatingItem>>, response: Response<List<getRatingItem>>) {
+                                        var output = response.body() as List<getRatingItem>
+                                        val rating = output.get(0).rating.toString()
+                                        if (titleList.size == 0) {
+                                            val year = calenderDate.year
+                                            val month = calenderDate.month
+                                            val day = calenderDate.day
+                                            val title = view.inputTitle.text.toString()
+                                            val review = view.inputReview.text.toString()
+                                            val genre = ""
+                                            val movieYear = ""
+                                            val img_url = "https://ssl.pstatic.net/static/movie/2011/06/poster_default.gif"
+                                            var reviewData = Review(year, month, day, title, review, rating, genre, movieYear, img_url)
 
-                            if (helper.insertReviewedMovie(reviewData)) {
-                                // 메시지 출력
-                                val message = "리뷰가 저장되었습니다."
-                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                                            if (helper.insertReviewedMovie(reviewData)) {
+                                                // 메시지 출력
+                                                val message = "리뷰가 저장되었습니다."
+                                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 
-                                // 제목, 리뷰 입력 칸 빈칸으로
-                                view.inputTitle.setText("")
-                                view.inputReview.setText("")
-                            } else {
-                                val message = "제목과 리뷰를 입력해주세요."
-                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                                                // 제목, 리뷰 입력 칸 빈칸으로
+                                                view.inputTitle.setText("")
+                                                view.inputReview.setText("")
+                                            } else {
+                                                val message = "제목과 리뷰를 입력해주세요."
+                                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                                            }
+                                        } else {
+                                            val year = calenderDate.year
+                                            val month = calenderDate.month
+                                            val day = calenderDate.day
+                                            val title = titleList.get(0).title
+                                            val review = view.inputReview.text.toString()
+                                            val genre = titleList.get(0).genre
+                                            val movieYear = titleList.get(0).year.toString()
+                                            val img_url = titleList.get(0).img_url
+                                            var reviewData = Review(year, month, day, title, review, rating, genre, movieYear, img_url)
+
+                                            if (helper.insertReviewedMovie(reviewData)) {
+                                                // 메시지 출력
+                                                val message = "리뷰가 저장되었습니다."
+                                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+
+                                                // 제목, 리뷰 입력 칸 빈칸으로
+                                                view.inputTitle.setText("")
+                                                view.inputReview.setText("")
+                                            } else {
+                                                val message = "제목과 리뷰를 입력해주세요."
+                                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                                            }
+                                        }
+                                    }
+                                })
                             }
                         }
-                    }
-                })
-            }
+                    })
+                }
+
         }
 
         //  외부 터치시 키보드 내리기
@@ -216,5 +240,10 @@ class calender : Fragment() {
     interface getMovies {
         @GET("api/movieInfo/{title}")
         fun titles(@Path("title") title: String): Call<List<movieInfoItem>>
+    }
+
+    interface getRating {
+        @GET("api/predict")
+        fun ratings(@Query("review")query:String): Call<List<getRatingItem>>
     }
 }
