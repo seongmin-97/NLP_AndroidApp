@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_pop_up.*
 import kotlinx.android.synthetic.main.fragment_calender.view.*
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,6 +20,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 class popUpActivity : AppCompatActivity(){
@@ -36,8 +38,14 @@ class popUpActivity : AppCompatActivity(){
             recyclerView.layoutManager = LinearLayoutManager(baseContext)
 
             // 레트로핏2 이용
+            val okHttpClient: OkHttpClient = OkHttpClient.Builder()
+                    .connectTimeout(1, TimeUnit.MINUTES)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(10, TimeUnit.SECONDS)
+                    .build()
             val retrofit = Retrofit.Builder()
                     .baseUrl("http://nlpandroidapp.pythonanywhere.com/")
+                    .client(okHttpClient)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             val INPUTTITLE = intent.getStringExtra("title")
@@ -50,6 +58,7 @@ class popUpActivity : AppCompatActivity(){
                 override fun onFailure(call: Call<List<movieInfoItem>>, t: Throwable) {
                     val message = "네트워크가 원할하지 않습니다."
                     Toast.makeText(baseContext, message, Toast.LENGTH_LONG).show()
+                    finish()
                 }
 
                 // 네트워크가 잘 될때
