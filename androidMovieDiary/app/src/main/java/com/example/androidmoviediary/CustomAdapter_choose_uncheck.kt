@@ -5,12 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_recycler.view.movieGenre
 import kotlinx.android.synthetic.main.item_recycler.view.movieReview
 import kotlinx.android.synthetic.main.item_recycler.view.movieRating
 import kotlinx.android.synthetic.main.item_recycler.view.movieTitle
 import kotlinx.android.synthetic.main.item_recycler.view.movieYear
-import kotlinx.android.synthetic.main.item_recycler_choose.view.*
+import kotlinx.android.synthetic.main.item_recycler_choose_uncheck.view.*
 
 class CustomAdapter_choose_uncheck : RecyclerView.Adapter<CustomAdapter_choose_uncheck.Holder_choose_uncheck>() {
     var listData = mutableListOf<Movie>()
@@ -26,7 +27,8 @@ class CustomAdapter_choose_uncheck : RecyclerView.Adapter<CustomAdapter_choose_u
                 val genre = itemView.movieGenre.text.toString()
                 val year = itemView.movieYear.text.toString().toInt()
                 val plot = itemView.movieReview.text.toString()
-                var movie = Movie(title, rating, genre, year, plot)
+                val img_url = itemView.imgUrl.text.toString()
+                var movie = Movie(title, rating, genre, year, plot, img_url)
                 helper.deleteRecommendedMovie(movie)
                 listData.remove(movie)
                 notifyDataSetChanged()
@@ -44,6 +46,8 @@ class CustomAdapter_choose_uncheck : RecyclerView.Adapter<CustomAdapter_choose_u
             itemView.movieGenre.text = "${movie.genre}"
             itemView.movieYear.text = "${movie.year}"
             itemView.movieReview.text = "${movie.plot}"
+            itemView.imgUrl.text = "${movie.img_url}"
+            Glide.with(itemView).load(movie.img_url).into(itemView.imageView)
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder_choose_uncheck {

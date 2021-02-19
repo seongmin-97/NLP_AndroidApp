@@ -15,33 +15,16 @@ import kotlinx.android.synthetic.main.fragment_reviewed_movies.view.*
 import kotlinx.android.synthetic.main.fragment_reviewed_movies.view.recyclerView
 import kotlinx.android.synthetic.main.item_recycler_choose.*
 import kotlinx.android.synthetic.main.item_recycler_choose.view.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Path
+import kotlin.concurrent.thread
 
 class recommendedMovies : Fragment() {
-    // 가상 데이터 만드는 함수
-    fun loadData(): MutableList<Movie> {
-        val data:MutableList<Movie> = mutableListOf()
-
-        for (no in 1..10) {
-            val title = "아이언맨 ${no+1} : 에이지 오브 울트론"
-            val rating = "별점 ${no+1} 점"
-            val genre = "히어로 ${no+1}"
-            val year = no+2000
-            val plot = "뉴욕에서 음악 선생님으로 일하던 ‘조’는\n" +
-                    "꿈에 그리던 최고의 밴드와 재즈 클럽에서 연주하게 된 그 날,\n" +
-                    "예기치 못한 사고로 영혼이 되어 ‘태어나기 전 세상’에 떨어진다.\n" +
-                    "\n" +
-                    "탄생 전 영혼들이 멘토와 함께 자신의 관심사를 발견하면 지구 통행증을 발급하는 ‘태어나기 전 세상’\n" +
-                    "‘조’는 그 곳에서 유일하게 지구에 가고 싶어하지 않는 시니컬한 영혼 ‘22’의 멘토가 된다.\n" +
-                    "\n" +
-                    "링컨, 간디, 테레사 수녀도 멘토되길 포기한 영혼 ‘22’\n" +
-                    "꿈의 무대에 서려면 ‘22’의 지구 통행증이 필요한 ‘조’\n" +
-                    "그는 다시 지구로 돌아가 꿈의 무대에 설 수 있을까?"
-            var movie = Movie(title, rating, genre, year, plot)
-            data.add(movie)
-        }
-        return data
-    }
-
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -49,13 +32,163 @@ class recommendedMovies : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_recommended_movies, container, false)
 
-        // 리사이클러뷰
-        val data:MutableList<Movie> = loadData()
-        var adapter = CustomAdapter_choose()
-        adapter.listData = data
-        view.recyclerView.adapter = adapter
-        view.recyclerView.layoutManager = LinearLayoutManager(context)
+        // 최근 리뷰한 영화 보여주기
+        thread(start=true) {
+            val helper = SqliteHelper(activity, "review", 1)
+            Log.d("select", "${helper.selectReviewedMovieReverce()}  1111")
+            // 추천 영화 restAPI로 검색하기
+            if (helper.selectReviewedMovieReverce().size != 0) {
+                val retrofit = Retrofit.Builder()
+                        .baseUrl("https://434063da14e9.ap.ngrok.io")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+                val useInterface = retrofit.create(searchRecommend::class.java)
+                Log.d("qwertyqwrety", "${helper.selectReviewedMovieReverce().get(0)}")
+                useInterface.titles(helper.selectReviewedMovieReverce().get(0).title.toString()).enqueue(object : Callback<List<getRecommendItem>> {
+                    // 네트워크가 불안정할 때
+                    override fun onFailure(call: Call<List<getRecommendItem>>, t: Throwable) {
+                        val message = "네트워크가 원할하지 않습니다."
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    }
 
+                    // 네트워크가 잘 될 때
+                    override fun onResponse(call: Call<List<getRecommendItem>>, response: Response<List<getRecommendItem>>) {
+                        // 우선 추천 목록을 받아서
+                        var titleList = response.body() as List<getRecommendItem>
+                        var recommendList = titleList.get(0)
+
+                        // 추천 영화 제목들을 리스트로 저장 (밑에서 반복문으로 활용)
+                        var result = mutableListOf<String>()
+                        result.add(recommendList.movie_1st)
+                        result.add(recommendList.movie_2nd)
+                        result.add(recommendList.movie_3rd)
+                        result.add(recommendList.movie_4th)
+                        result.add(recommendList.movie_5th)
+                        result.add(recommendList.movie_6th)
+                        result.add(recommendList.movie_7th)
+                        result.add(recommendList.movie_8th)
+                        result.add(recommendList.movie_9th)
+                        result.add(recommendList.movie_10th)
+
+                        var recommendMovieInfo = mutableListOf<movieInfoItem>()
+
+                        for (title in result) {
+                            val retrofit = Retrofit.Builder()
+                                    .baseUrl("https://434063da14e9.ap.ngrok.io")
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build()
+                            val useInterface = retrofit.create(searchMovies::class.java)
+
+                            useInterface.titles(title).enqueue(object : Callback<List<movieInfoItem>> {
+                                override fun onFailure(call: Call<List<movieInfoItem>>, t: Throwable) {
+                                    val message = "네트워크가 원할하지 않습니다. ㅠㅠ"
+                                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                                }
+
+                                override fun onResponse(call: Call<List<movieInfoItem>>, response: Response<List<movieInfoItem>>) {
+                                    val titleList = response.body() as List<movieInfoItem>
+                                    recommendMovieInfo.add(titleList.get(0))
+
+                                    // 리사이클러뷰
+                                    val data: MutableList<movieInfoItem> = recommendMovieInfo
+                                    var adapter = CustomAdapter_choose()
+                                    adapter.listData = data
+                                    view.recyclerView.adapter = adapter
+                                    view.recyclerView.layoutManager = LinearLayoutManager(context)
+                                }
+                            })
+                        }
+                    }
+                })
+            } else {
+                Log.d("not data", "not data in here 2222")
+            }
+        }
         return view
+    }
+    override fun onResume() {
+        super.onResume()
+        // 최근 리뷰한 영화 보여주기
+        thread(start=true) {
+            val helper = SqliteHelper(activity, "review", 1)
+            Log.d("select", "${helper.selectReviewedMovieReverce()} 333333")
+            // 추천 영화 restAPI로 검색하기
+            if (helper.selectReviewedMovieReverce().size != 0) {
+                val retrofit = Retrofit.Builder()
+                        .baseUrl("https://434063da14e9.ap.ngrok.io")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+                val useInterface = retrofit.create(searchRecommend::class.java)
+                Log.d("qwertyqwrety", "${helper.selectReviewedMovieReverce().get(0)}")
+                useInterface.titles(helper.selectReviewedMovieReverce().get(0).title.toString()).enqueue(object : Callback<List<getRecommendItem>> {
+                    // 네트워크가 불안정할 때
+                    override fun onFailure(call: Call<List<getRecommendItem>>, t: Throwable) {
+                        val message = "네트워크가 원할하지 않습니다."
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    }
+
+                    // 네트워크가 잘 될 때
+                    override fun onResponse(call: Call<List<getRecommendItem>>, response: Response<List<getRecommendItem>>) {
+                        // 우선 추천 목록을 받아서
+                        var titleList = response.body() as List<getRecommendItem>
+                        var recommendList = titleList.get(0)
+
+                        // 추천 영화 제목들을 리스트로 저장 (밑에서 반복문으로 활용)
+                        var result = mutableListOf<String>()
+                        result.add(recommendList.movie_1st)
+                        result.add(recommendList.movie_2nd)
+                        result.add(recommendList.movie_3rd)
+                        result.add(recommendList.movie_4th)
+                        result.add(recommendList.movie_5th)
+                        result.add(recommendList.movie_6th)
+                        result.add(recommendList.movie_7th)
+                        result.add(recommendList.movie_8th)
+                        result.add(recommendList.movie_9th)
+                        result.add(recommendList.movie_10th)
+
+                        var recommendMovieInfo = mutableListOf<movieInfoItem>()
+
+                        for (title in result) {
+                            val retrofit = Retrofit.Builder()
+                                    .baseUrl("https://434063da14e9.ap.ngrok.io")
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build()
+                            val useInterface = retrofit.create(MainActivity.searchMovies::class.java)
+
+                            useInterface.titles(title).enqueue(object : Callback<List<movieInfoItem>> {
+                                override fun onFailure(call: Call<List<movieInfoItem>>, t: Throwable) {
+                                    val message = "네트워크가 원할하지 않습니다. ㅠㅠ"
+                                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                                }
+
+                                override fun onResponse(call: Call<List<movieInfoItem>>, response: Response<List<movieInfoItem>>) {
+                                    val titleList = response.body() as List<movieInfoItem>
+                                    recommendMovieInfo.add(titleList.get(0))
+
+                                    // 리사이클러뷰
+                                    val data: MutableList<movieInfoItem> = recommendMovieInfo
+                                    var adapter = CustomAdapter_choose()
+                                    adapter.listData = data
+                                    recyclerView.adapter = adapter
+                                    recyclerView.layoutManager = LinearLayoutManager(context)
+                                }
+                            })
+                        }
+                    }
+                })
+            } else {
+                Log.d("not data", "not data in here 4444")
+            }
+        }
+    }
+    // 네트워크 연결을 위한 인터페이스
+    interface searchRecommend {
+        @GET("api/recommend/{title}")
+        fun titles(@Path("title") title: String): Call<List<getRecommendItem>>
+    }
+
+    interface searchMovies {
+        @GET("api/movie/{title}")
+        fun titles(@Path("title") title: String): Call<List<movieInfoItem>>
     }
 }

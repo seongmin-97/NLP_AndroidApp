@@ -3,6 +3,7 @@ package com.example.androidmoviediary
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ScrollView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_calender.*
 import kotlinx.android.synthetic.main.fragment_calender.view.*
@@ -30,6 +32,7 @@ import kotlin.concurrent.thread
 
 
 class calender : Fragment() {
+    @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -88,11 +91,6 @@ class calender : Fragment() {
 
         // 저장 버튼 누르면 영화 리뷰 저장!
         val helper = SqliteHelper(activity, "review", 1)
-        val okHttpClient: OkHttpClient = OkHttpClient.Builder()
-                .connectTimeout(1, TimeUnit.MINUTES)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .build()
         view.inputButton.setOnClickListener {
             // 웸의 데이터에서 해당 영화가 있으면 가져오고 없으면 입력한대로 출력
 
@@ -102,10 +100,8 @@ class calender : Fragment() {
             } else {
                 val message = "리뷰를 저장하는 중입니다."
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                thread(start = true) {
                     val retrofit = Retrofit.Builder()
-                            .baseUrl("http://nlpandroidapp.pythonanywhere.com/")
-                            .client(okHttpClient)
+                            .baseUrl("https://434063da14e9.ap.ngrok.io")
                             .addConverterFactory(GsonConverterFactory.create())
                             .build()
                     val INPUTTITLE = view.inputTitle.text.toString()
@@ -131,8 +127,7 @@ class calender : Fragment() {
 
                             thread(start = true) {
                                 val retrofit = Retrofit.Builder()
-                                        .baseUrl("http://nlpandroidapp.pythonanywhere.com/")
-                                        .client(okHttpClient)
+                                        .baseUrl("https://434063da14e9.ap.ngrok.io")
                                         .addConverterFactory(GsonConverterFactory.create())
                                         .build()
                                 Log.d("inputtitle", "${INPUTTITLE}")
@@ -203,7 +198,7 @@ class calender : Fragment() {
                     })
                 }
             }
-        }
+
 
         //  외부 터치시 키보드 내리기
         view.ConstraintLayout.setOnClickListener {

@@ -5,25 +5,31 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_recycler.view.movieGenre
 import kotlinx.android.synthetic.main.item_recycler.view.movieReview
 import kotlinx.android.synthetic.main.item_recycler.view.movieRating
 import kotlinx.android.synthetic.main.item_recycler.view.movieTitle
 import kotlinx.android.synthetic.main.item_recycler.view.movieYear
 import kotlinx.android.synthetic.main.item_recycler_choose.view.*
+import kotlinx.android.synthetic.main.item_recycler_choose.view.checkButton
+import kotlinx.android.synthetic.main.item_recycler_choose.view.imageView
+import kotlinx.android.synthetic.main.item_recycler_choose_uncheck.view.*
 
 class CustomAdapter_choose : RecyclerView.Adapter<CustomAdapter_choose.Holder_choose>() {
-    var listData = mutableListOf<Movie>()
+    var listData = mutableListOf<movieInfoItem>()
 
     inner class Holder_choose(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         // 아이템 뷰에 데이터 집어넣기
-        fun setMovie(movie: Movie) {
-            itemView.movieTitle.text = "${movie.title}"
-            itemView.movieRating.text = "${movie.rating}"
-            itemView.movieGenre.text = "${movie.genre}"
-            itemView.movieYear.text = "${movie.year}"
-            itemView.movieReview.text = "${movie.plot}"
+        fun setMovie(movieinfoitem: movieInfoItem) {
+            itemView.movieTitle.text = "${movieinfoitem.title}"
+            itemView.movieRating.text = "${movieinfoitem.rating}"
+            itemView.movieGenre.text = "${movieinfoitem.genre}"
+            itemView.movieYear.text = "${movieinfoitem.year}"
+            itemView.movieReview.text = "${movieinfoitem.plot}"
+            itemView.imgURL.text = "${movieinfoitem.img_url}"
+            Glide.with(itemView).load(movieinfoitem.img_url).into(itemView.imageView)
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder_choose {
@@ -48,7 +54,8 @@ class CustomAdapter_choose : RecyclerView.Adapter<CustomAdapter_choose.Holder_ch
             val genre = holder.itemView.movieGenre.text.toString()
             val year = holder.itemView.movieYear.text.toString().toInt()
             val plot = holder.itemView.movieReview.text.toString()
-            var movie = Movie(title, rating, genre, year, plot)
+            val img_url = holder.itemView.imgURL.text.toString()
+            var movie = Movie(title, rating, genre, year, plot, img_url)
             helper.insertRecommendedMovie(movie)
 
             // 메세지 울력
