@@ -38,14 +38,8 @@ class popUpActivity : AppCompatActivity(){
             recyclerView.layoutManager = LinearLayoutManager(baseContext)
 
             // 레트로핏2 이용
-            val okHttpClient: OkHttpClient = OkHttpClient.Builder()
-                    .connectTimeout(1, TimeUnit.MINUTES)
-                    .readTimeout(30, TimeUnit.SECONDS)
-                    .writeTimeout(10, TimeUnit.SECONDS)
-                    .build()
             val retrofit = Retrofit.Builder()
-                    .baseUrl("http://nlpandroidapp.pythonanywhere.com/")
-                    .client(okHttpClient)
+                    .baseUrl("https://434063da14e9.ap.ngrok.io")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             val INPUTTITLE = intent.getStringExtra("title")
@@ -71,7 +65,6 @@ class popUpActivity : AppCompatActivity(){
                     adapter.listData.addAll(titleList.toMutableList())
                     adapter.notifyDataSetChanged()
                     button.visibility = View.VISIBLE
-
                 }
             })
         }
