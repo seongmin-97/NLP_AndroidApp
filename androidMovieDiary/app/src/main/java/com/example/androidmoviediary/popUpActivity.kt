@@ -39,7 +39,7 @@ class popUpActivity : AppCompatActivity(){
 
             // 레트로핏2 이용
             val retrofit = Retrofit.Builder()
-                    .baseUrl("https://434063da14e9.ap.ngrok.io")
+                    .baseUrl("https://7cc73acea3da.ap.ngrok.io")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             val INPUTTITLE = intent.getStringExtra("title")
@@ -58,11 +58,11 @@ class popUpActivity : AppCompatActivity(){
                 // 네트워크가 잘 될때
                 override fun onResponse(
                         call: Call<List<movieInfoItem>>,
-                        response: Response<List<movieInfoItem>>
+                        responsePop: Response<List<movieInfoItem>>
                 ) {
-                    var titleList = response.body() as List<movieInfoItem>
-                    Log.d("getTitle", "${titleList.size}")
-                    adapter.listData.addAll(titleList.toMutableList())
+                    var titlePopup = responsePop.body() as List<movieInfoItem>
+                    Log.d("getTitle", "${titlePopup.size}")
+                    adapter.listData.addAll(titlePopup.toMutableList())
                     adapter.notifyDataSetChanged()
                     button.visibility = View.VISIBLE
                 }
