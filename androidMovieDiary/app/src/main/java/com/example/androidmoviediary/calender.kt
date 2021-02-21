@@ -93,7 +93,6 @@ class calender : Fragment() {
         val helper = SqliteHelper(activity, "review", 1)
         view.inputButton.setOnClickListener {
             // 웸의 데이터에서 해당 영화가 있으면 가져오고 없으면 입력한대로 출력
-
             if (view.inputTitle.text.isEmpty() || view.inputReview.text.isEmpty()) {
                 val message = "제목과 리뷰를 입력해주세요."
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show()
@@ -101,7 +100,7 @@ class calender : Fragment() {
                 val message = "리뷰를 저장하는 중입니다."
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                     val retrofit = Retrofit.Builder()
-                            .baseUrl("https://434063da14e9.ap.ngrok.io")
+                            .baseUrl("https://7cc73acea3da.ap.ngrok.io")
                             .addConverterFactory(GsonConverterFactory.create())
                             .build()
                     val INPUTTITLE = view.inputTitle.text.toString()
@@ -122,12 +121,12 @@ class calender : Fragment() {
                                 call: Call<List<movieInfoItem>>,
                                 response: Response<List<movieInfoItem>>
                         ) {
-                            var titleList = response.body() as List<movieInfoItem>
-                            Log.d("getTitle", "${titleList.size}")
+                            var getResult = response.body() as List<movieInfoItem>
+                            Log.d("getTitle", "${getResult.size}")
 
                             thread(start = true) {
                                 val retrofit = Retrofit.Builder()
-                                        .baseUrl("https://434063da14e9.ap.ngrok.io")
+                                        .baseUrl("https://7cc73acea3da.ap.ngrok.io")
                                         .addConverterFactory(GsonConverterFactory.create())
                                         .build()
                                 Log.d("inputtitle", "${INPUTTITLE}")
@@ -142,36 +141,18 @@ class calender : Fragment() {
                                     override fun onResponse(call: Call<List<getRatingItem>>, response: Response<List<getRatingItem>>) {
                                         var output = response.body() as List<getRatingItem>
                                         val rating = output.get(0).rating.toString()
-                                        if (titleList.size == 0) {
-                                            val year = calenderDate.year
-                                            val month = calenderDate.month
-                                            val day = calenderDate.day
-                                            val title = INPUTTITLE
-                                            val review = INPUTQUERY
-                                            val genre = ""
-                                            val movieYear = ""
-                                            val img_url = "https://ssl.pstatic.net/static/movie/2011/06/poster_default.gif"
-                                            var reviewData = Review(year, month, day, title, review, rating, genre, movieYear, img_url)
-
-                                            if (helper.insertReviewedMovie(reviewData)) {
-                                                // 메시지 출력
-                                                val message = "리뷰가 저장되었습니다."
-                                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                                            } else {
-                                                val message = "제목과 리뷰를 다시 확인해주세요."
-                                                view.inputTitle.setText(INPUTTITLE)
-                                                view.inputReview.setText(INPUTQUERY)
-                                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                                            }
+                                        if (getResult.size == 0) {
+                                            val message = "해당 영화가 데이터에 없습니다."
+                                            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                                         } else {
                                             val year = calenderDate.year
                                             val month = calenderDate.month
                                             val day = calenderDate.day
-                                            val title = titleList.get(0).title
+                                            val title = getResult.get(0).title
                                             val review = INPUTQUERY
-                                            val genre = titleList.get(0).genre
-                                            val movieYear = titleList.get(0).year.toString()
-                                            val img_url = titleList.get(0).img_url
+                                            val genre = getResult.get(0).genre
+                                            val movieYear = getResult.get(0).year.toString()
+                                            val img_url = getResult.get(0).img_url
                                             var reviewData = Review(year, month, day, title, review, rating, genre, movieYear, img_url)
 
                                             Log.d("return", "${title}, ${review}")

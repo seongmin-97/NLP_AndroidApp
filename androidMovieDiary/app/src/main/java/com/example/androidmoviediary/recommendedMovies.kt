@@ -11,8 +11,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_recommended_movies.*
 import kotlinx.android.synthetic.main.fragment_recommended_movies.view.*
-import kotlinx.android.synthetic.main.fragment_reviewed_movies.view.*
-import kotlinx.android.synthetic.main.fragment_reviewed_movies.view.recyclerView
 import kotlinx.android.synthetic.main.item_recycler_choose.*
 import kotlinx.android.synthetic.main.item_recycler_choose.view.*
 import retrofit2.Call
@@ -39,7 +37,7 @@ class recommendedMovies : Fragment() {
             // 추천 영화 restAPI로 검색하기
             if (helper.selectReviewedMovieReverce().size != 0) {
                 val retrofit = Retrofit.Builder()
-                        .baseUrl("https://434063da14e9.ap.ngrok.io")
+                        .baseUrl("https://7cc73acea3da.ap.ngrok.io")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()
                 val useInterface = retrofit.create(searchRecommend::class.java)
@@ -74,7 +72,7 @@ class recommendedMovies : Fragment() {
 
                         for (title in result) {
                             val retrofit = Retrofit.Builder()
-                                    .baseUrl("https://434063da14e9.ap.ngrok.io")
+                                    .baseUrl("https://7cc73acea3da.ap.ngrok.io")
                                     .addConverterFactory(GsonConverterFactory.create())
                                     .build()
                             val useInterface = retrofit.create(searchMovies::class.java)
@@ -86,8 +84,8 @@ class recommendedMovies : Fragment() {
                                 }
 
                                 override fun onResponse(call: Call<List<movieInfoItem>>, response: Response<List<movieInfoItem>>) {
-                                    val titleList = response.body() as List<movieInfoItem>
-                                    recommendMovieInfo.add(titleList.get(0))
+                                    var titleRecommend = response.body() as List<movieInfoItem>
+                                    recommendMovieInfo.add(titleRecommend.get(0))
 
                                     // 리사이클러뷰
                                     val data: MutableList<movieInfoItem> = recommendMovieInfo
@@ -106,16 +104,18 @@ class recommendedMovies : Fragment() {
         }
         return view
     }
-    override fun onResume() {
-        super.onResume()
+
+    override fun onStart() {
+        super.onStart()
+
         // 최근 리뷰한 영화 보여주기
         thread(start=true) {
             val helper = SqliteHelper(activity, "review", 1)
-            Log.d("select", "${helper.selectReviewedMovieReverce()} 333333")
+            Log.d("select", "${helper.selectReviewedMovieReverce()}  1111")
             // 추천 영화 restAPI로 검색하기
             if (helper.selectReviewedMovieReverce().size != 0) {
                 val retrofit = Retrofit.Builder()
-                        .baseUrl("https://434063da14e9.ap.ngrok.io")
+                        .baseUrl("https://7cc73acea3da.ap.ngrok.io")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()
                 val useInterface = retrofit.create(searchRecommend::class.java)
@@ -130,8 +130,8 @@ class recommendedMovies : Fragment() {
                     // 네트워크가 잘 될 때
                     override fun onResponse(call: Call<List<getRecommendItem>>, response: Response<List<getRecommendItem>>) {
                         // 우선 추천 목록을 받아서
-                        var titleList = response.body() as List<getRecommendItem>
-                        var recommendList = titleList.get(0)
+                        var titleResume = response.body() as List<getRecommendItem>
+                        var recommendList = titleResume.get(0)
 
                         // 추천 영화 제목들을 리스트로 저장 (밑에서 반복문으로 활용)
                         var result = mutableListOf<String>()
@@ -150,10 +150,10 @@ class recommendedMovies : Fragment() {
 
                         for (title in result) {
                             val retrofit = Retrofit.Builder()
-                                    .baseUrl("https://434063da14e9.ap.ngrok.io")
+                                    .baseUrl("https://7cc73acea3da.ap.ngrok.io")
                                     .addConverterFactory(GsonConverterFactory.create())
                                     .build()
-                            val useInterface = retrofit.create(MainActivity.searchMovies::class.java)
+                            val useInterface = retrofit.create(searchMovies::class.java)
 
                             useInterface.titles(title).enqueue(object : Callback<List<movieInfoItem>> {
                                 override fun onFailure(call: Call<List<movieInfoItem>>, t: Throwable) {
@@ -162,8 +162,8 @@ class recommendedMovies : Fragment() {
                                 }
 
                                 override fun onResponse(call: Call<List<movieInfoItem>>, response: Response<List<movieInfoItem>>) {
-                                    val titleList = response.body() as List<movieInfoItem>
-                                    recommendMovieInfo.add(titleList.get(0))
+                                    var result = response.body() as List<movieInfoItem>
+                                    recommendMovieInfo.add(result.get(0))
 
                                     // 리사이클러뷰
                                     val data: MutableList<movieInfoItem> = recommendMovieInfo
@@ -177,10 +177,11 @@ class recommendedMovies : Fragment() {
                     }
                 })
             } else {
-                Log.d("not data", "not data in here 4444")
+                Log.d("not data", "not data in here 2222")
             }
         }
     }
+
     // 네트워크 연결을 위한 인터페이스
     interface searchRecommend {
         @GET("api/recommend/{title}")
