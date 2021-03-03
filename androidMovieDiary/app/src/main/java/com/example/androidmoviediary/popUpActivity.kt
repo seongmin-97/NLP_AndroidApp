@@ -39,7 +39,7 @@ class popUpActivity : AppCompatActivity(){
 
             // 레트로핏2 이용
             val retrofit = Retrofit.Builder()
-                    .baseUrl("https://7cc73acea3da.ap.ngrok.io")
+                    .baseUrl("https://8e184158ac21.ap.ngrok.io")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             val INPUTTITLE = intent.getStringExtra("title")

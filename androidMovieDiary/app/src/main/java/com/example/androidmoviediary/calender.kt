@@ -100,7 +100,7 @@ class calender : Fragment() {
                 val message = "리뷰를 저장하는 중입니다."
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                     val retrofit = Retrofit.Builder()
-                            .baseUrl("https://7cc73acea3da.ap.ngrok.io")
+                            .baseUrl("https://8e184158ac21.ap.ngrok.io")
                             .addConverterFactory(GsonConverterFactory.create())
                             .build()
                     val INPUTTITLE = view.inputTitle.text.toString()
@@ -126,7 +126,7 @@ class calender : Fragment() {
 
                             thread(start = true) {
                                 val retrofit = Retrofit.Builder()
-                                        .baseUrl("https://7cc73acea3da.ap.ngrok.io")
+                                        .baseUrl("https://8e184158ac21.ap.ngrok.io")
                                         .addConverterFactory(GsonConverterFactory.create())
                                         .build()
                                 Log.d("inputtitle", "${INPUTTITLE}")
