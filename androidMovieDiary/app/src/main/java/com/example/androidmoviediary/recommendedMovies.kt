@@ -37,7 +37,7 @@ class recommendedMovies : Fragment() {
             // 추천 영화 restAPI로 검색하기
             if (helper.selectReviewedMovieReverce().size != 0) {
                 val retrofit = Retrofit.Builder()
-                        .baseUrl("https://7cc73acea3da.ap.ngrok.io")
+                        .baseUrl("https://8e184158ac21.ap.ngrok.io")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()
                 val useInterface = retrofit.create(searchRecommend::class.java)
@@ -72,7 +72,7 @@ class recommendedMovies : Fragment() {
 
                         for (title in result) {
                             val retrofit = Retrofit.Builder()
-                                    .baseUrl("https://7cc73acea3da.ap.ngrok.io")
+                                    .baseUrl("https://8e184158ac21.ap.ngrok.io")
                                     .addConverterFactory(GsonConverterFactory.create())
                                     .build()
                             val useInterface = retrofit.create(searchMovies::class.java)
@@ -115,7 +115,7 @@ class recommendedMovies : Fragment() {
             // 추천 영화 restAPI로 검색하기
             if (helper.selectReviewedMovieReverce().size != 0) {
                 val retrofit = Retrofit.Builder()
-                        .baseUrl("https://7cc73acea3da.ap.ngrok.io")
+                        .baseUrl("https://8e184158ac21.ap.ngrok.io")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()
                 val useInterface = retrofit.create(searchRecommend::class.java)
@@ -150,7 +150,7 @@ class recommendedMovies : Fragment() {
 
                         for (title in result) {
                             val retrofit = Retrofit.Builder()
-                                    .baseUrl("https://7cc73acea3da.ap.ngrok.io")
+                                    .baseUrl("https://8e184158ac21.ap.ngrok.io")
                                     .addConverterFactory(GsonConverterFactory.create())
                                     .build()
                             val useInterface = retrofit.create(searchMovies::class.java)
